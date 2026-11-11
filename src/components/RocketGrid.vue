@@ -1,14 +1,14 @@
 <template>
-  <v-row>
+  <v-row class="rocket-grid-row">
     <v-col
       v-for="rocket in rockets"
       :key="rocket.id"
       cols="12"
       sm="6"
-      md="4"
-      lg="3"
+      lg="4"
+      class="d-flex"
     >
-      <RocketCard :rocket="rocket" />
+      <RocketCard :rocket="rocket" class="w-100" />
     </v-col>
   </v-row>
 </template>
@@ -21,3 +21,10 @@ defineProps<{
   rockets: Rocket[]
 }>()
 </script>
+
+<style scoped>
+.rocket-grid-row {
+  margin-top: -12px;
+  margin-bottom: 24px;
+}
+</style>

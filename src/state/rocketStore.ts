@@ -82,8 +82,13 @@ export function useRocketStore() {
     }
   }
 
-  async function getRocketById(id: string | number): Promise<Rocket | null> {
+  async function getRocketById(id: string | number, force = false): Promise<Rocket | null> {
     const idStr = String(id)
+
+    if (force) {
+      delete state.detailCache[idStr]
+      state.detailError = null
+    }
 
     // 1. Check local/loaded rockets first
     const existing = allRockets.value.find((r) => String(r.id) === idStr)
@@ -91,13 +96,14 @@ export function useRocketStore() {
       return existing
     }
 
-    // 2. Check detail cache
-    if (state.detailCache[idStr]) {
+    // 2. Check detail cache if not forced
+    if (!force && state.detailCache[idStr]) {
       return state.detailCache[idStr]
     }
 
     // 3. If ID is local rocket (starts with 'local-') but not found, it doesn't exist
     if (idStr.startsWith('local-')) {
+      state.detailError = `Local rocket with ID "${idStr}" not found.`
       return null
     }
 
@@ -118,12 +124,19 @@ export function useRocketStore() {
   }
 
   function addRocket(input: NewRocketInput): Rocket {
+    const trimmedName = input.fullName ? input.fullName.trim() : ''
+    if (!trimmedName) {
+      throw new Error('Rocket full name is required.')
+    }
+
+    const trimmedCountry = input.countryCode ? input.countryCode.trim().toUpperCase() : null
+
     const newRocket: Rocket = {
       id: `local-${Date.now()}`,
-      fullName: input.fullName.trim(),
+      fullName: trimmedName,
       description: input.description?.trim() || null,
       launchCost: input.launchCost?.trim() || null,
-      countryCode: input.countryCode?.trim() || null,
+      countryCode: trimmedCountry || null,
       maidenFlight: input.maidenFlight?.trim() || null,
       imageUrl: input.imageUrl?.trim() || null,
       isLocal: true,
