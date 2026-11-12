@@ -288,14 +288,36 @@ async function submitForm() {
 </script>
 
 <style scoped>
+/* Vuetify places dialog content inside a teleported overlay. */
+:deep(.add-rocket-dialog-wrapper .v-overlay__content) {
+  max-height: calc(100vh - 48px);
+  max-height: calc(100dvh - 48px);
+  overflow: hidden;
+}
+
 .aerospace-dialog {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  max-height: calc(100vh - 48px);
+  max-height: calc(100dvh - 48px);
+  overflow: hidden;
   background: #0d1527 !important;
   border: 1px solid rgba(56, 189, 248, 0.2) !important;
   box-shadow: 0 24px 48px -12px rgba(0, 0, 0, 0.8), 0 0 24px -4px rgba(56, 189, 248, 0.15) !important;
 }
 
 .dialog-header {
+  flex: 0 0 auto;
   background: rgba(16, 27, 51, 0.95);
+}
+
+:deep(.aerospace-dialog > .v-card-text) {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
 }
 
 .header-icon-box {
@@ -338,6 +360,7 @@ async function submitForm() {
 }
 
 .dialog-footer {
+  flex: 0 0 auto;
   background: rgba(7, 11, 20, 0.6);
 }
 
